@@ -1,10 +1,9 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Pomelo.EntityFrameworkCore.MySql.Metadata;
 
-#nullable disable
-
-namespace DotnetC_.Migrations
+namespace DotnetC.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration

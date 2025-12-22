@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using DotNetEnv;
 
-namespace DotnetCSharp.Data;
+namespace DotnetC_.Data;
 
 public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
 {
@@ -13,12 +13,20 @@ public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<Applicati
 
         var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
         
-        // Tạo connection string từ biến môi trường
-        var connectionString = $"Server={Environment.GetEnvironmentVariable("DB_HOST")};"
-            + $"Port={Environment.GetEnvironmentVariable("DB_PORT")};"
-            + $"Database={Environment.GetEnvironmentVariable("DB_NAME")};"
-            + $"User={Environment.GetEnvironmentVariable("DB_USER")};"
-            + $"Password={Environment.GetEnvironmentVariable("DB_PASSWORD")};";
+        // Lấy và validate biến môi trường
+        var dbHost = Environment.GetEnvironmentVariable("DB_HOST") 
+            ?? throw new InvalidOperationException("DB_HOST không được tìm thấy trong .env");
+        var dbPort = Environment.GetEnvironmentVariable("DB_PORT") 
+            ?? throw new InvalidOperationException("DB_PORT không được tìm thấy trong .env");
+        var dbName = Environment.GetEnvironmentVariable("DB_NAME") 
+            ?? throw new InvalidOperationException("DB_NAME không được tìm thấy trong .env");
+        var dbUser = Environment.GetEnvironmentVariable("DB_USER") 
+            ?? throw new InvalidOperationException("DB_USER không được tìm thấy trong .env");
+        var dbPassword = Environment.GetEnvironmentVariable("DB_PASSWORD") 
+            ?? throw new InvalidOperationException("DB_PASSWORD không được tìm thấy trong .env");
+        
+        // Tạo connection string
+        var connectionString = $"Server={dbHost};Port={dbPort};Database={dbName};User={dbUser};Password={dbPassword};";
         
         optionsBuilder.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 30)));
 

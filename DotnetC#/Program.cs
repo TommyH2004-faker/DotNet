@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using DotnetCSharp.Data;
+using DotnetC_.Data;
 using DotNetEnv;
 
 // Load biến môi trường từ .env
