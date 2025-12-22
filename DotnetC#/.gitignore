@@ -1,0 +1,42 @@
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Build results
+bin/
+obj/
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Visual Studio
+.vs/
+*.rsuser
+
+# Rider
+.idea/
+
+# VS Code
+.vscode/
+
+# Test results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+
+# NuGet packages
+*.nupkg
+*.snupkg
+**/packages/*
+
+# Database
+*.db
+*.db-shm
+*.db-wal
+
+# Logs
+*.log
+logs/
