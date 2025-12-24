@@ -6,6 +6,8 @@ using DotnetC_.Application.Interfaces;
 using DotnetC_.Application.Services;
 using DotnetC_.Domain.Interfaces;
 using DotnetC_.Infrastructure.Repositories;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 
 // Load biến môi trường từ .env
 Env.Load();
@@ -14,6 +16,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // ===== Register services =====
 builder.Services.AddControllers();
+
+// Add FluentValidation
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<DotnetC_.Application.Validators.CreateBookDtoValidator>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
@@ -30,6 +36,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Register Repositories
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IBookRepository, BookRepository>();
+
+// Register AutoMapper
+builder.Services.AddAutoMapper(typeof(Program).Assembly, typeof(DotnetC_.Application.Mappings.BookMappingProfile).Assembly);
 
 // Register Services
 builder.Services.AddScoped<IBookService, BookService>();

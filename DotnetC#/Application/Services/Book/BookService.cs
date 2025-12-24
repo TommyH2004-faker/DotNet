@@ -1,62 +1,72 @@
-using DotnetC_.Domain.Entities;
+
+
+using AutoMapper;
 using DotnetC_.Application.DTOs.DtoBook;
 using DotnetC_.Application.Interfaces;
-using DotnetC_.Domain.Interfaces;
+using DotnetC_.Domain.Entities;
 using DotnetC_.Domain.Exceptions;
+using DotnetC_.Domain.Interfaces;
 
 namespace DotnetC_.Application.Services;
 
-public class BookService : IBookService
+ public class BookService : IBookService
 {
-    private readonly IBookRepository _bookRepository;
-    
-    public BookService(IBookRepository bookRepository)
+    private readonly IRepository<Book> _bookRepo;
+    private readonly IMapper _mapper;
+
+    public BookService(IRepository<Book> bookRepo, IMapper mapper)
     {
-        _bookRepository = bookRepository;
+        _bookRepo = bookRepo;
+        _mapper = mapper;
     }
 
-    public async Task<Book> CreateBookAsync(CreateBookDto createBookDto)
+    public async Task<Book> CreateBookAsync(CreateBookDto dto)
     {
-        var book = new Book
-        {
-            NameBook = createBookDto.NameBook,
-            Author = createBookDto.Author,
-            Isbn = createBookDto.Isbn,
-            Description = createBookDto.Description,
-            ListPrice = createBookDto.ListPrice,
-            SellPrice = createBookDto.SellPrice,
-            Quantity = createBookDto.Quantity,
-            DiscountPercent = createBookDto.DiscountPercent
-        };
-
-        return await _bookRepository.AddAsync(book);
+        var book = _mapper.Map<Book>(dto);
+        await _bookRepo.AddAsync(book);
+        return _mapper.Map<Book>(book);
     }
+
 
     public async Task<List<Book>> GetAllBooksAsync()
     {
-        var books = await _bookRepository.GetBooksWithGenresAsync();
-        return books.ToList();
+        var books =  _bookRepo.GetAllAsync();
+        await Task.CompletedTask;
+        return _mapper.Map<List<Book>>(books);
+    }
+
+     public async Task DeleteBook(int id)
+    {
+        var book = await _bookRepo.GetByIdAsync(id);
+        if (book == null) throw new NotFoundException("Book not found");
+        await _bookRepo.DeleteAsync(book);
+    }
+
+    public async Task<List<Book>> GetAllBooks()
+    {
+        var books = await _bookRepo.GetAllAsync();
+        return _mapper.Map<List<Book>>(books);
     }
 
     public async Task<Book> GetBookByIdAsync(int id)
     {
-        var book = await _bookRepository.GetBookByIdWithDetailsAsync(id);
-        if (book == null)
+        var book =  _bookRepo.GetByIdAsync(id);
+        if(book == null)
         {
             throw new NotFoundException($"Book with id {id} not found");
         }
-        return book;
+        await Task.CompletedTask;
+        return _mapper.Map<Book>(book);
     }
 
     public async Task<Book> UpdateBookAsync(int id, Book book)
     {
-        var existingBook = await _bookRepository.GetByIdAsync(id);
-        if (existingBook == null)
+        var updatedBook =  _bookRepo.UpdateAsync(book);
+        if(updatedBook == null)
         {
             throw new NotFoundException($"Book with id {id} not found");
         }
-        
-        await _bookRepository.UpdateAsync(book);
-        return book;
+        await Task.CompletedTask;
+        return _mapper.Map<Book>(updatedBook);
     }
 }
