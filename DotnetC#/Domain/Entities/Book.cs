@@ -1,62 +1,36 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+namespace DotnetC_.Domain.Entities;
 
-namespace DotnetC_.Domain.Entities
+public class Book
 {
-    [Table("book")]
-    public class Book
+    public Guid Id { get; private set; }
+    public string Title { get; private set; }
+    public string Author { get; private set; }
+    public decimal Price { get; private set; }
+    public int Quantity { get; private set; }
+
+    protected Book() { } // EF Core
+
+    public Book(string title, string author, decimal price, int quantity)
     {
-        [Key]
-        [Column("id_book")]
-        public int IdBook { get; set; }
+        Id = Guid.NewGuid();
+        Title = title;
+        Author = author;
+        Price = price;
+        Quantity = quantity;
+    }
 
-        [Column("name_book")]
-        [Required]
-        [StringLength(255)]
-        public string NameBook { get; set; } = null!;
+    public void UpdateInfo(string title, string author, decimal price)
+    {
+        Title = title;
+        Author = author;
+        Price = price;
+    }
 
-        [Column("author")]
-        [Required]
-        [StringLength(255)]
-        public string Author { get; set; } = null!;
+    public void DecreaseStock(int amount)
+    {
+        if (amount > Quantity)
+            throw new Exception("Not enough stock");
 
-        [Column("isbn")]
-        [Required]
-        [StringLength(50)]
-        public string Isbn { get; set; } = null!;
-
-        [Column("description", TypeName = "LONGTEXT")]
-        [Required]
-        public string Description { get; set; } = null!;
-
-        [Column("list_price")]
-        public double ListPrice { get; set; }
-
-        [Column("sell_price")]
-        public double SellPrice { get; set; }
-
-        [Column("quantity")]
-        public int Quantity { get; set; }
-
-        [Column("avg_rating")]
-        public double? AvgRating { get; set; }
-
-        [Column("sold_quantity")]
-        public int? SoldQuantity { get; set; }
-
-        [Column("discount_percent")]
-        public int DiscountPercent { get; set; }
-
-        public ICollection<Genre> Genres { get; set; } = new List<Genre>();
-
-        public ICollection<Image> Images { get; set; } = new List<Image>();
-
-        public ICollection<Review> Reviews { get; set; } = new List<Review>();
-
-        public ICollection<OrdersDetail> OrderDetails { get; set; } = new List<OrdersDetail>();
-
-        public ICollection<FavoriteBook> FavoriteBooks { get; set; } = new List<FavoriteBook>();
-
-        public ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
+        Quantity -= amount;
     }
 }

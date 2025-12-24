@@ -1,9 +1,13 @@
 using DotnetC_.Domain.Entities;
 
-namespace DotnetC_.Domain.Interfaces;
+namespace DotnetC_.Domain.Exceptions;
 
-public interface IBookRepository : IRepository<Book>
+    
+public interface IBookRepository
 {
-    Task<IEnumerable<Book>> GetBooksWithGenresAsync();
-    Task<Book?> GetBookByIdWithDetailsAsync(int id);
+    Task<Book?> GetByIdAsync(Guid id);
+    Task<List<Book>> GetAllAsync();
+    Task AddAsync(Book book);
+    Task UpdateAsync(Book book);
+    Task DeleteAsync(Book book);
 }
